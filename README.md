@@ -75,3 +75,6 @@ API LIST
     /<int:pk>
     - 갤러리 자세히 보기
 
+
+----
+구글 계정 : cwDev99@gmail.com

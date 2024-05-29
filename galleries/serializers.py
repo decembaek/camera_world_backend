@@ -7,16 +7,17 @@ from .models import Gallery
 
 
 class GalleryListSerializer(serializers.ModelSerializer):
-    grapher = TinyUserSerializer(read_only=True)
+    photo_grapher = TinyUserSerializer(read_only=True)
     photos = PhotoSerializer(many=True, read_only=True)
     videos = VideoSerializer(many=True, read_only=True)
 
     class Meta:
         model = Gallery
         fields = [
+            "id",
             "title",
             "content",
-            "grapher",
+            "photo_grapher",
             "camera",
             "place",
             "photos",

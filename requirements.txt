@@ -1,2 +1,7 @@
 django
 djangorestframework
+django-cors-headers
+django-environ
+dj-rest-auth
+django-allauth
+requests

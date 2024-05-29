@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+import environ
+
+env = environ.Env()
+environ.Env.read_env(env_file=".env")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,13 +30,33 @@ SECRET_KEY = "django-insecure-arxghqiwpmznes@mf30rq9c6*7wt^22+x4c&chtmmx37mp^4it
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Application definition
 
+SYSTEM_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    # django-allauth, dj-rest-auth
+    "django.contrib.sites",
+]
+
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework.authtoken",
+    # django-cors-headers
+    "corsheaders",
+    # dj-rest-auth (allauth 랑 djangorestframework 랑 결합)
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
 ]
 
 CUSTOM_APPS = [
@@ -48,19 +73,10 @@ CUSTOM_APPS = [
     "users.apps.UsersConfig",
 ]
 
-SYSTEM_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-]
-
 
 INSTALLED_APPS = SYSTEM_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
-MIDDLEWARE = [
+SYETEM_MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -68,7 +84,18 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # django-allauth
+    "allauth.account.middleware.AccountMiddleware",
 ]
+
+THIRD_PARTY_MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+]
+
+CUSTOM_MIDDLEWARE = []
+
+MIDDLEWARE = SYETEM_MIDDLEWARE + THIRD_PARTY_MIDDLEWARE + CUSTOM_MIDDLEWARE
+
 
 ROOT_URLCONF = "config.urls"
 
@@ -151,3 +178,46 @@ MEDIA_URL = "user-uploads/"
 
 # Auth 사용자 유저 커스텀
 AUTH_USER_MODEL = "users.User"
+
+
+# CORS, CSRF 관련 세팅
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ORIGINS = ["http://localhost:3000", "http://localhost:8000"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000"]
+
+# django-allauth
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+# EMAIL_HOST : 사용할 도메인 주소
+# EMAIL_PORT : gmail의 port 번호
+# EMAIL_HOST_USER : email을 보내는 이메일
+# EMAIL_HOST_PASSWORD : 앱 비밀번호
+# EMAIL_USER_TLS : email 보낼때 암호화 여부
+# DEFAULT_FORM_EMAIL : mail을 보낼 email id 지정
+# ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS : 보낸 email만료날짜 (일 기준)
+# ACCOUNT_EMAIL_SUBJECT_PREFIX : 보내지는 email 맨 앞에 붙여지는 이름
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_FROM = "cwDev99@gmail.com"
+EMAIL_HOST_USER = "cwDev99@gmail.com"
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FORM_EMAIL = EMAIL_HOST_USER
+
+PASSWORD_RESET_TIMEOUT = 14400
+
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "이메일 인증"
+# 이메일 인증 및 사용자 모델 설정
+ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_EMAIL_VERIFICATION = "mandatory" #none이면 이메일 인증 없이 로그인 가능
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
