@@ -1,6 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import transaction
 
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -45,15 +51,51 @@ class Users(APIView):
         if serializer.is_valid():
             user = serializer.save()
             user.set_password(password)
+            user.is_active = False
             user.save()
-            serializer = serializers.MakeUserSerializer(user)
-            login(request=request, user=user)
+
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            activation_link = (
+                f"{settings.FRONTEND_URL}/api/v1/user/activate/{uid}/{token}"
+            )
+            email_body = f"안녕하세요 {user.email}님,\n아래 링크를 눌러 이메일 인증을 완료하세요.\n{activation_link}"
+            send_mail(
+                "계정을 활성화 하세요.",
+                email_body,
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+            )
+
+            # login(request=request, user=user)
             return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # {"email": "tmdrb123@gmail.com", "password": "0000"}
+class ActivateView(APIView):
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user is not None and default_token_generator.check_token(user, token):
+            user.is_active = True
+            user.is_email = True
+            user.save()
+            return Response(
+                {"message": "Account activated successfully."},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"error": "Invalid activation link."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class ChangePassword(APIView):

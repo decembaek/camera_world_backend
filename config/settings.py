@@ -200,24 +200,31 @@ AUTHENTICATION_BACKENDS = (
 # DEFAULT_FORM_EMAIL : mail을 보낼 email id 지정
 # ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS : 보낸 email만료날짜 (일 기준)
 # ACCOUNT_EMAIL_SUBJECT_PREFIX : 보내지는 email 맨 앞에 붙여지는 이름
-
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# smtp 실제 배포, console 개발환경
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_FROM = "cwDev99@gmail.com"
 EMAIL_HOST_USER = "cwDev99@gmail.com"
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
+
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FORM_EMAIL = EMAIL_HOST_USER
 
-PASSWORD_RESET_TIMEOUT = 14400
+# 프론트엔드 URL 설정
+FRONTEND_URL = "http://localhost:8000"  # 실제 프론트엔드 URL로 변경 필요
 
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
-ACCOUNT_EMAIL_SUBJECT_PREFIX = "이메일 인증"
+# PASSWORD_RESET_TIMEOUT = 14400
+
+# ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+# ACCOUNT_EMAIL_SUBJECT_PREFIX = "이메일 인증"
 # 이메일 인증 및 사용자 모델 설정
-ACCOUNT_EMAIL_REQUIRED = True
+
 # ACCOUNT_EMAIL_VERIFICATION = "mandatory" #none이면 이메일 인증 없이 로그인 가능
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_AUTHENTICATION_METHOD = "email"
+# ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None

@@ -21,6 +21,8 @@ class MyGallerySerializer(serializers.ModelSerializer):
 
 
 class MakeUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
         fields = ["email", "password"]

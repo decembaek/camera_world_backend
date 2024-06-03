@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path("", views.Users.as_view()),
+    path("activate/<uidb64>/<token>", views.ActivateView.as_view(), name="activate"),
     path("me", views.Me.as_view()),
     path("change-password", views.ChangePassword.as_view()),
     path("log-in", views.LogIn.as_view()),
