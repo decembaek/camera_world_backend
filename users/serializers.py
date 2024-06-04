@@ -10,7 +10,7 @@ from .models import User
 class TinyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["nickname", "camera", "avatar"]
+        fields = ["email", "nickname", "camera", "avatar"]
 
 
 # 마이페이지 갤러리 보기

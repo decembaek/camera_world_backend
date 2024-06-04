@@ -25,3 +25,6 @@ class Review(CommonModel):
         blank=True,
         related_name="reviews",
     )
+
+    def __str__(self):
+        return f"g_{self.gallery}_c_{self.camera}"

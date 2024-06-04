@@ -22,3 +22,6 @@ class Gallery(CommonModel):
         null=True,
         blank=True,
     )
+
+    def __str__(self):
+        return f"{self.photo_grapher}_{self.title}_ID_{self.id}"

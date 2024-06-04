@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import transaction
 
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 
 from rest_framework.response import Response
@@ -59,14 +60,27 @@ class Users(APIView):
             activation_link = (
                 f"{settings.FRONTEND_URL}/api/v1/user/activate/{uid}/{token}"
             )
-            email_body = f"안녕하세요 {user.email}님,\n아래 링크를 눌러 이메일 인증을 완료하세요.\n{activation_link}"
-            send_mail(
-                "계정을 활성화 하세요.",
-                email_body,
+            context = {"user": user.email, "url": activation_link}
+            html_contents = render_to_string("account_mail.html", context)
+            mail_subject = "[CW] 계정 인증을 완료해주세요."
+            text_contents = "계정 인증을 위한 메세지 입니다."
+            email = EmailMultiAlternatives(
+                mail_subject,
+                text_contents,
                 settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False,
+                to=[user.email],
             )
+            email.attach_alternative(html_contents, "text/html")
+            email.send()
+
+            # email_body = f"안녕하세요 {user.email}님,\n아래 링크를 눌러 이메일 인증을 완료하세요.\n{activation_link}"
+            # send_mail(
+            #     "계정을 활성화 하세요.",
+            #     email_body,
+            #     settings.DEFAULT_FROM_EMAIL,
+            #     [user.email],
+            #     fail_silently=False,
+            # )
 
             # login(request=request, user=user)
             return Response(status=status.HTTP_201_CREATED)

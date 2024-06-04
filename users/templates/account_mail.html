@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>계정 인증</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border: 1px solid #dddddd;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .logo {
+        display: block;
+        margin: 0 auto 20px auto;
+        width: 150px;
+      }
+      .website-name {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333333;
+      }
+      .welcome-message {
+        text-align: center;
+        font-size: 18px;
+        color: #555555;
+        margin: 20px 0;
+      }
+      .verify-button {
+        display: block;
+        width: 200px;
+        margin: 0 auto;
+        padding: 10px 20px;
+        text-align: center;
+        background-color: #4caf50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      .verify-button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <img src="logo_url" alt="Logo" class="logo" />
+      <div class="website-name">카메라 월드</div>
+      <div class="welcome-message">
+        환영합니다, {{user}}님 아래 버튼을 눌러 계정 인증을 진행해주세요.
+      </div>
+      <a href="{{url}}" class="verify-button">계정 인증</a>
+    </div>
+  </body>
+</html>

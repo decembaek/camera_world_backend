@@ -13,6 +13,9 @@ class Photo(CommonModel):
         related_name="photos",
     )
 
+    def __str__(self):
+        return f"gallery_{self.gallery}"
+
 
 class Video(CommonModel):
     file = models.URLField()
