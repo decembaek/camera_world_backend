@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import ParseError
+
 
 from . import serializers
 from .models import User
@@ -57,10 +57,8 @@ class Users(APIView):
 
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            activation_link = (
-                f"{settings.FRONTEND_URL}/api/v1/user/activate/{uid}/{token}"
-            )
-            context = {"user": user.email, "url": activation_link}
+            activation_link = f"{settings.FRONTEND_URL}/user/activate/{uid}/{token}"
+            context = {"user": user.email, "url": activation_link, "form": "인증"}
             html_contents = render_to_string("account_mail.html", context)
             mail_subject = "[CW] 계정 인증을 완료해주세요."
             text_contents = "계정 인증을 위한 메세지 입니다."
@@ -163,3 +161,108 @@ class LogOut(APIView):
     def post(self, request):
         logout(request)
         return Response({"ok": "로그아웃 되었습니다"})
+
+
+class MyCamera(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = serializers.TinyUserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PasswordResetAPIView(APIView):
+
+    def get_user(self, email):
+        try:
+            return User.objects.get(email=email)
+        except:
+            return None
+
+    def post(self, request):
+        email = request.data.get("email")
+        if not email:
+            return Response(
+                {"error": "이메일을 입력해주세요"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user = self.get_user(email=email)
+        if user is None:
+            return Response(
+                {"error": "이메일로 가입된 계정이 존재하지 않습니다."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if user:
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_link = f"{settings.FRONTEND_URL}/user/reset/{uid}/{token}/"
+
+            context = {"user": user.email, "url": reset_link, "form": "찾기"}
+            html_contents = render_to_string("account_mail.html", context)
+            mail_subject = "[CW] 계정 찾기을 완료해주세요."
+            text_contents = "계정 찾기을 위한 메세지 입니다."
+            email = EmailMultiAlternatives(
+                mail_subject,
+                text_contents,
+                settings.DEFAULT_FROM_EMAIL,
+                to=[user.email],
+            )
+            email.attach_alternative(html_contents, "text/html")
+            email.send()
+
+        return Response(
+            {"ok": "비밀번호 재설정 링크를 이메일로 보냈습니다"},
+            status=status.HTTP_200_OK,
+        )
+
+
+class PasswordResetConfirmAPIView(APIView):
+    def post(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response(
+                {"error": "유효하지 않은 링크입니다."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if default_token_generator.check_token(user, token):
+            new_password = request.data.get("new_password")
+            if not new_password:
+                return Response(
+                    {"error": "새 비밀번호를 입력해주세요"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            user.set_password(new_password)
+            user.save()
+            return Response(
+                {"message": "비밀번호가 성공적으로 재설정되었습니다."},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                {"error": "유효하지 않은 링크입니다."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class FindEmail(APIView):
+    def get(self, request):
+        print(request.data)
+        serializer = serializers.FindUserSerializer(data=request.data)
+        if serializer.is_valid():
+            print(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# {
+#     "first_name" : "",
+#     "last_name" : "",
+#     "name" : "",
+#     "nickname": ""
+# }

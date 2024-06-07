@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>계정 인증</title>
+    <title>계정 {{form}}</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -58,9 +58,9 @@
       <img src="logo_url" alt="Logo" class="logo" />
       <div class="website-name">카메라 월드</div>
       <div class="welcome-message">
-        환영합니다, {{user}}님 아래 버튼을 눌러 계정 인증을 진행해주세요.
+        환영합니다, {{user}}님 아래 버튼을 눌러 계정 {{form}}을 진행해주세요.
       </div>
-      <a href="{{url}}" class="verify-button">계정 인증</a>
+      <a href="{{url}}" class="verify-button">계정 {{form}}</a>
     </div>
   </body>
 </html>

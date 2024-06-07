@@ -44,7 +44,7 @@ SYSTEM_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # django-allauth, dj-rest-auth
-    "django.contrib.sites",
+    # "django.contrib.sites",
 ]
 
 THIRD_PARTY_APPS = [
@@ -53,11 +53,11 @@ THIRD_PARTY_APPS = [
     # django-cors-headers
     "corsheaders",
     # dj-rest-auth (allauth 랑 djangorestframework 랑 결합)
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
+    # "dj_rest_auth",
+    # "dj_rest_auth.registration",
+    # "allauth",
+    # "allauth.account",
+    # "allauth.socialaccount",
 ]
 
 CUSTOM_APPS = [
@@ -86,7 +86,7 @@ SYETEM_MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # django-allauth
-    "allauth.account.middleware.AccountMiddleware",
+    # "allauth.account.middleware.AccountMiddleware",
 ]
 
 THIRD_PARTY_MIDDLEWARE = [
@@ -182,16 +182,18 @@ AUTH_USER_MODEL = "users.User"
 
 
 # CORS, CSRF 관련 세팅
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://localhost:8000"]
+
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ORIGINS = ["http://localhost:3000", "http://localhost:8000"]
+
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://localhost:8000"]
 
 # django-allauth
-SITE_ID = 1
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
+# SITE_ID = 1
+# AUTHENTICATION_BACKENDS = (
+#     "django.contrib.auth.backends.ModelBackend",
+#     "allauth.account.auth_backends.AuthenticationBackend",
+# )
 
 # EMAIL_HOST : 사용할 도메인 주소
 # EMAIL_PORT : gmail의 port 번호

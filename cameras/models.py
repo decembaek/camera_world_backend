@@ -11,9 +11,15 @@ class Camera(models.Model):
         null=True,
         blank=True,
     )
-    megapixels = models.DecimalField(max_digits=5, decimal_places=2)
-    iso = models.CharField(max_length=50)
+    megapixels = models.DecimalField(
+        max_digits=5, decimal_places=2, null=True, blank=True
+    )
+    iso = models.CharField(max_length=50, null=True, blank=True)
     image_stabilization = models.BooleanField(default=False)
-    price_won = models.DecimalField(max_digits=20, decimal_places=2)
-    price_dollar = models.DecimalField(max_digits=20, decimal_places=2)
-    release_date = models.DateField()
+    price_won = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True
+    )
+    price_dollar = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True
+    )
+    release_date = models.DateField(null=True, blank=True)

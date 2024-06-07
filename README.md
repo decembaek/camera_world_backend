@@ -78,3 +78,16 @@ API LIST
 
 ----
 구글 계정 : cwDev99@gmail.com
+---
+Gallery
+/api/v1/galleries - GET, POST
+/api/v1/galleries/<Gallery ID> - GET
+
+User
+/api/v1/user - POST
+/api/v1/user/activate/(uid)/token - GET
+/api/v1/user/me - GET
+/api/v1/user/change-password - POST
+/api/v1/user/log-in - POST
+/api/v1/user/log-out - POST
+

@@ -27,7 +27,7 @@ class User(AbstractUser):
     username = None
     avatar = models.URLField(blank=True, null=True)
     name = models.CharField(max_length=150)
-    nickname = models.CharField(max_length=150, default="")
+    nickname = models.CharField(max_length=150, unique=True, null=True, blank=True)
     email = models.EmailField(max_length=250, unique=True)
     camera = models.ManyToManyField(
         "cameras.camera",
@@ -41,3 +41,4 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     is_email = models.BooleanField(default=False)
+    is_profile = models.BooleanField(default=False)

@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Place
+
+# @admin.register(Gallery)
+# class GalleryAdmin(admin.ModelAdmin):
+#     list_display =
+
+admin.site.register(Place)

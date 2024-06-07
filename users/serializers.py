@@ -41,4 +41,23 @@ class ProfileUserSerializer(serializers.ModelSerializer):
             "galleries",
             "email",
             "is_email",
+            "is_profile",
         ]
+
+
+class FindUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "name", "nickname"]
+
+    # def validate(self, data):
+    #     if (
+    #         not data.get("first_name")
+    #         and not data.get("last_name")
+    #         and not data.get("name")
+    #     ):
+    #         raise serializers.ValidationError("이름 작성란을 채워주세요")
+    #     if not data.get("nickname"):
+    #         raise serializers.ValidationError("닉네임을 작성해주세요")
+    #     return data
